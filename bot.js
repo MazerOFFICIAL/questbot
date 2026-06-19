@@ -292,10 +292,7 @@ async function autoCheck() {
     }
 
     for (const quest of newOnes) {
-      await channel.send({
-        content: `<@&${CONFIG.ROLE_ID}>\n${quest.url}`,
-        embeds: [questEmbed(quest)],
-      });
+      await channel.send(`<@&${CONFIG.ROLE_ID}>\n${quest.url}`);
       sentQuests.add(quest.id);
       console.log(`Sent: ${quest.title} (${quest.id})`);
     }
