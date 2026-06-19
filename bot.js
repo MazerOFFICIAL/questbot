@@ -30,7 +30,7 @@ let lastFetch = 0;
 
 // Fetch active quests via the internal Discord client endpoint
 async function fetchQuests() {
-  const res = await fetch("https://discord.com/api/v9/quests/@me", {
+  const res = await fetch("https://discord.com/api/v9/quests", {
     headers: {
       Authorization: CONFIG.USER_TOKEN,
       "Content-Type": "application/json",
