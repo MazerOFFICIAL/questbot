@@ -30,21 +30,30 @@ let lastFetch = 0;
 
 // Fetch active quests via the internal Discord client endpoint
 async function fetchQuests() {
-  const res = await fetch("https://discord.com/api/v9/quests", {
+  const res = await fetch("https://discord.com/api/v9/quests/@me", {
     headers: {
       Authorization: CONFIG.USER_TOKEN,
       "Content-Type": "application/json",
       "User-Agent":
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) discord/1.0.9163 Chrome/124.0.6367.243 Electron/30.2.0 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+      "X-Discord-Locale": "en-US",
+      "X-Discord-Timezone": "Europe/Warsaw",
       "X-Super-Properties": Buffer.from(
         JSON.stringify({
           os: "Windows",
-          browser: "Discord Client",
-          release_channel: "stable",
-          client_version: "1.0.9163",
-          os_version: "10.0.22631",
+          browser: "Chrome",
+          device: "",
           system_locale: "en-US",
-          client_build_number: 312017,
+          browser_user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+          browser_version: "131.0.0.0",
+          os_version: "10",
+          referrer: "",
+          referring_domain: "",
+          referrer_current: "",
+          referring_domain_current: "",
+          release_channel: "stable",
+          client_build_number: 565311,
+          client_event_source: null,
         })
       ).toString("base64"),
     },
@@ -68,11 +77,12 @@ async function fetchQuests() {
 
   const data = await res.json();
   console.log(`API response keys: ${Object.keys(data)}`);
-  console.log(`Quests array length: ${(data.quests || []).length}`);
-  if (data.quests?.length) console.log(`First quest ID: ${data.quests[0].id}`);
-  if (!data.quests?.length) console.log(`Raw response: ${JSON.stringify(data).slice(0, 500)}`);
+  const rawQuests = data.quests || data.quest_configs || [];
+  console.log(`Quests array length: ${rawQuests.length}`);
+  if (rawQuests.length) console.log(`First quest: ${JSON.stringify(rawQuests[0]).slice(0, 300)}`);
+  if (!rawQuests.length) console.log(`Raw response: ${JSON.stringify(data).slice(0, 1000)}`);
 
-  const quests = (data.quests || []).map((q) => {
+  const quests = rawQuests.map((q) => {
     const cfg = q.config || {};
     const msg = cfg.messages || {};
     return {
