@@ -67,6 +67,10 @@ async function fetchQuests() {
   }
 
   const data = await res.json();
+  console.log(`API response keys: ${Object.keys(data)}`);
+  console.log(`Quests array length: ${(data.quests || []).length}`);
+  if (data.quests?.length) console.log(`First quest ID: ${data.quests[0].id}`);
+  if (!data.quests?.length) console.log(`Raw response: ${JSON.stringify(data).slice(0, 500)}`);
 
   const quests = (data.quests || []).map((q) => {
     const cfg = q.config || {};
